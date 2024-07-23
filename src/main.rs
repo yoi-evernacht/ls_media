@@ -25,7 +25,15 @@ fn main() {
         )
         .get_matches();
 
-    if let Some(path) = matches.get_one::<PathBuf>("path") {
-        println!("{}", path.display());
+    let path = matches.get_one::<PathBuf>("path").unwrap();
+    let pathstr = path.to_str().unwrap();
+    if pathstr.starts_with('~') {
+        tilda_to_homedir(pathstr);
     }
+}
+
+fn tilda_to_homedir(pathstr: &str) -> PathBuf {
+    let a = pathstr.chars().skip(1).collect::<String>();
+    let path = dirs::home_dir().unwrap().join(a);
+    path
 }
