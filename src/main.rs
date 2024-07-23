@@ -1,4 +1,6 @@
-use clap::{Arg, ArgAction, Command, ValueHint};
+use std::path::PathBuf;
+
+use clap::{value_parser, Arg, ArgAction, Command, ValueHint};
 
 fn main() {
     let matches = Command::new("Ls_Media")
@@ -10,7 +12,8 @@ fn main() {
                 .action(ArgAction::Set)
                 .value_name("PATH")
                 .value_hint(ValueHint::DirPath)
-                .index(1)
+                .value_parser(value_parser!(PathBuf))
+                .index(1),
         )
         // long
         .arg(
@@ -18,7 +21,11 @@ fn main() {
                 .action(ArgAction::SetTrue)
                 .long("long")
                 .short('l')
-                .help("Display extended info")
+                .help("Display extended info"),
         )
         .get_matches();
+
+    if let Some(path) = matches.get_one::<PathBuf>("path") {
+        println!("{}", path.display());
+    }
 }
