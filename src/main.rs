@@ -1,5 +1,3 @@
-use std::path::PathBuf;
-
 use clap::{value_parser, Arg, ArgAction, Command, ValueHint};
 
 fn main() {
@@ -12,7 +10,7 @@ fn main() {
                 .action(ArgAction::Set)
                 .value_name("PATH")
                 .value_hint(ValueHint::DirPath)
-                .value_parser(value_parser!(PathBuf))
+                .value_parser(value_parser!(String))
                 .index(1),
         )
         // long
@@ -25,15 +23,5 @@ fn main() {
         )
         .get_matches();
 
-    let path = matches.get_one::<PathBuf>("path").unwrap();
-    let pathstr = path.to_str().unwrap();
-    if pathstr.starts_with('~') {
-        tilda_to_homedir(pathstr);
-    }
-}
-
-fn tilda_to_homedir(pathstr: &str) -> PathBuf {
-    let a = pathstr.chars().skip(1).collect::<String>();
-    let path = dirs::home_dir().unwrap().join(a);
-    path
+    let path = matches.get_one::<String>("path").unwrap();
 }
