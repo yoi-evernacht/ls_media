@@ -1,3 +1,5 @@
+use std::{fs::{self, ReadDir}, path::PathBuf};
+
 use clap::{value_parser, Arg, ArgAction, Command, ValueHint};
 
 fn main() {
@@ -10,7 +12,7 @@ fn main() {
                 .action(ArgAction::Set)
                 .value_name("PATH")
                 .value_hint(ValueHint::DirPath)
-                .value_parser(value_parser!(String))
+                .value_parser(value_parser!(PathBuf))
                 .index(1),
         )
         // long
@@ -24,5 +26,11 @@ fn main() {
         .get_matches();
 
     // target dir
-    let path = matches.get_one::<String>("path").unwrap();
+    let path = matches.get_one::<PathBuf>("path").unwrap();
+    get_dir_child(path);
+}
+
+fn get_dir_child(dir:&PathBuf) -> ReadDir {
+    let elements = fs::read_dir(dir.as_path()).unwrap();
+    elements
 }
